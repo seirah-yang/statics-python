@@ -1,0 +1,66 @@
+데이터셋1. 심부전데이터셋 ( Predicting Heart Failure )
+
+캐클(Kaggle)에서 공개한 심부전데이터셋과 COVID-19 임상시험 데이터셋 활용하기 
+출처: https://www.kaggle.com/datasets/whenamancodes/heart-failure-clinical-records
+
+심혈관계 질환(Cardiovascular diseases, CVD)은 전 세계 사망자의 31% (사망원인 1위) 차지하고 있으며, 매년 1790만 명을 사망에 이르게 하는 무서운 질병입니다. 대부분의 심혈관 질환은 담배 흡연 여부, 식단, 비만, 운동 여부, 알콜 섭취 등의 관리를 통해 예방할 수 있다고 알려져 있습니다.
+
+그 중 심부전은 심혈관 질환 중 가장 대표적인 질병이고, 본 데이터셋은 심부전에 의한 사망률을 예측하는 데 사용할 수 있는 12가지 컬럼을 포함하고 있습니다. 기계학습을 통한 모델링은 심혈관 질환이 있거나 높은 위험도를 가진 군에 있어 심혈관 사망 위험도 조기 발견 및 관리를 하는데 도움이 될 수 있습니다.
+
+데이터셋에 포함한 컬럼은 다음과 같습니다.
+
+** columns명(columns소개): 설명
+age(나이): 환자 나이(년)
+anaemia(빈혈):	적혈구 또는 헤모글로빈(혈색소) 감소여부 (1/0)
+high blood pressure	(고혈압):	고혈압 유무 (1/0)
+creatinine phosphokinase (CPK)	(크레아틴 인산효소):	혈중 CPK 효소 수준(mcg/L)
+diabetes	(당뇨):	당뇨병 유무 (1/0)
+ejection fraction	(박출률):	수축 시 심장에서 나가는 혈액의 비율(%)
+platelets	(혈소판):	혈액 내 혈소판 (kiloplatelets/mL)
+sex	(성별):	성별 (남/녀)
+serum creatinine	(혈청 크레아틴	):혈중 혈청 크레아티닌 농도(mg/dL)
+serum sodium	(혈청 나트륨):	혈중 혈청 나트륨 수준(mEq/L)
+smoking	(흡연여부):	환자 흡연 유무 (1/0)
+time	(추적관찰시간):	추적관찰기간 (일)
+[target] death event	(사망여부):	추적기관 중 환자 사망여부 (1/0)
+
+데이터셋 2. 코로나데이터셋 ( COVID-19 Clinical Trials dataset )
+출처: https://www.kaggle.com/datasets/parulpandey/covid19-clinical-trials-dataset
+
+ClinicalTrials.gov 은 미국 국립 의학 도서관에서 운영하는 데이터 베이스로, 전세계에서 수행되는 민간 및 공공 자금 임상 연구를 리스트업 해둔 자료입니다. 모든 데이터는 Open-source로 공개되어 있으며, 필요한 주제와 관련된 데이터셋을 다운받아 직접 분석할 수 있습니다.
+
+본 장에서는 ClinicalTrials.gov내에 COVID-19과 관련된 임상 시험 정보로 구성된 데이터셋을 활용하여 분석합니다. 해당 데이터셋은 캐글 사이트에서 제공하고 있으며, https://www.kaggle.com/code/parulpandey/eda-on-covid-19-clinical-trials/notebook 사이트에서 구체적인 데이터 분포 및 주요 내용들을 확인할 수 있습니다.
+
+본 데이터셋에서 사용하고 있는 Columns은 다음과 같습니다.
+
+columns명(columns소개):	설명
+NCT Number	(데이터베이스 고유ID):	ClinicalTrials.gov 에 등록된 각 임상 연구 기록에 부여된 고유 식별 코드
+Title	(과제이름):	임상시험 이름
+Acronym	(약어):	임상 스터디를 식별하는 데 사용되는 약어 또는 이니셜(모든 스터디에 하나씩 있는 것은 아님)
+Status	(과제현황):	과제진행에 대한 현황 (Active, not recruiting/Not yet recruiting/Recruiting)
+Study Results	(연구 결과):	ClinicalTrials.gov 결과 데이터베이스에 게시된 요약 결과를 포함하는 스터디 레코드
+Conditions	(임상연구참여조건):	연구 중인 질병
+Interventions	(연구개입):	임상 연구의 초점이 되는 과정 또는 행동. 개입에는 약물, 의료기기, 절차 등이 포함될 수 있음
+Outcome Measures	 (결과측정방법):	결과측정방법
+Sponsor/Collaborators	 (스폰서):	연구재정지원단체
+Gender	(젠더):	임상시험참여가능성별
+Age	(나이):	임상시험참여가능나이
+Phases	(임상단계):	임상시험의 단계
+Enrollment	(등록수):	임상시험참여수
+Funded Bys	 (자금 지원자):	임상시험 진행 기관 타입
+Study Type	(임상시험유형):	임상시험유형(개입형/ 관찰형)
+Study Designs	 (임상시험 디자인):	임상시험 스터디 디자인
+Other IDs 	(기타명칭):	임상시험을 지칭하는 다른 명칭
+Start Date	(시작 날짜):	임상시험 시작날짜
+Primary Completion Date	(기본 완료 날짜):	임상시험 초기 완료 날짜
+Completion Date	(완료 날짜):	임상시험 완료 날짜
+First Posted	 (게시 날짜):	임상시험정보 게시 날짜
+Results First Posted	(처음 게시된 결과	): 초기 결과보고일
+Last Update Posted  (	마지막 업데이트 게시):	최신 결과보고일
+Locations	(위치):	임상시험을 진행하는 위치
+Study Documents	(스터디 문서):	임상시험 관련 문서
+URL	(URL):	임상시험 관련 링크
+
+3. 데이터셋 경로 설정
+▶ 코랩 내 경로 설정하기
+코랩은 로컬 환경이 아닌 클라우드 환경이기 때문에 외부 파일을 불러오거나 저장하는 경우 파일을 코랩 스페이스에 직접 업로드를 하는것이 효율적입니다. Kaggle 에서 사용된 ‘ Heart Failure Clinical Record.csv’ 데이터를 불러올수 있습니다.
