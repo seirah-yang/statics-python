@@ -3,19 +3,7 @@
 학습일: 2025/09/19
 선택: 프로젝트 진행중
 
-| Contesnts | Contents |
-| --- | --- |
-| [Importing Libraries](https://www.kaggle.com/code/hasibalmuzdadid/lung-cancer-analysis-accuracy-96-4#1) | Correlation Heatmap |
-| [About Dataset](https://www.kaggle.com/code/hasibalmuzdadid/lung-cancer-analysis-accuracy-96-4#2) | [Preprocessing For Classification](https://www.kaggle.com/code/hasibalmuzdadid/lung-cancer-analysis-accuracy-96-4#13) |
-| [Basic Exploration](https://www.kaggle.com/code/hasibalmuzdadid/lung-cancer-analysis-accuracy-96-4#3) | [Logistic Regression Model](https://www.kaggle.com/code/hasibalmuzdadid/lung-cancer-analysis-accuracy-96-4#14) |
-| [Dataset Summary](https://www.kaggle.com/code/hasibalmuzdadid/lung-cancer-analysis-accuracy-96-4#4) | [Gaussian Naive Bayes Model](https://www.kaggle.com/code/hasibalmuzdadid/lung-cancer-analysis-accuracy-96-4#15) |
-| [Digging Deeper](https://www.kaggle.com/code/hasibalmuzdadid/lung-cancer-analysis-accuracy-96-4#5) | [Bernoulli Naive Bayes Model](https://www.kaggle.com/code/hasibalmuzdadid/lung-cancer-analysis-accuracy-96-4#16) |
-| [Custom Palette For Visualization](https://www.kaggle.com/code/hasibalmuzdadid/lung-cancer-analysis-accuracy-96-4#6) | [Support Vector Machine Model](https://www.kaggle.com/code/hasibalmuzdadid/lung-cancer-analysis-accuracy-96-4#17) |
-| [Positive Lung Cancer Cases](https://www.kaggle.com/code/hasibalmuzdadid/lung-cancer-analysis-accuracy-96-4#7) | [Random Forest Model](https://www.kaggle.com/code/hasibalmuzdadid/lung-cancer-analysis-accuracy-96-4#18) |
-| [Positive Cases' Age Distribution](https://www.kaggle.com/code/hasibalmuzdadid/lung-cancer-analysis-accuracy-96-4#8) | [K Nearest Neighbors Model](https://www.kaggle.com/code/hasibalmuzdadid/lung-cancer-analysis-accuracy-96-4#19) |
-| [Positive Cases' Gender Distribution](https://www.kaggle.com/code/hasibalmuzdadid/lung-cancer-analysis-accuracy-96-4#9) | [Extreme Gradient Boosting Model](https://www.kaggle.com/code/hasibalmuzdadid/lung-cancer-analysis-accuracy-96-4#20) |
-| [Gender-wise Positive Cases' Reasons](https://www.kaggle.com/code/hasibalmuzdadid/lung-cancer-analysis-accuracy-96-4#10) | [Neural Network Architecture](https://www.kaggle.com/code/hasibalmuzdadid/lung-cancer-analysis-accuracy-96-4#21) |
-| [Gender-wise Positive Cases' Symptoms](https://www.kaggle.com/code/hasibalmuzdadid/lung-cancer-analysis-accuracy-96-4#11) |  |
+
 - **GENDER :** M [Male] , F [Female]
 - **AGE :** Age of patients
 - **SMOKING :** 2 [Yes] , 1 [No]
