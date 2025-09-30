@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DocuLab · 통계방법 제안 & 시각화</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+  <style>
+    :root{
+      --green:#19b57e; --green-200:#a9e8d2; --green-300:#78d7bb; --ink:#0f172a; --bg:#f5f7f9; --blue:#1e73ff; --gray:#94a3b8; --card:#ffffff; --shadow:0 6px 24px rgba(16,24,40,.08);
+    }
+    *{box-sizing:border-box}
+    body{margin:0; font-family: "Pretendard",system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple SD Gothic Neo","Noto Sans KR",sans-serif; color:var(--ink); background:var(--bg)}
+    /* header */
+    header{background:var(--green); color:#fff; padding:16px 24px; border-radius:24px; margin:20px; box-shadow:var(--shadow)}
+    .head-wrap{display:flex; align-items:center; justify-content:space-between; gap:16px}
+    .brand{display:flex; align-items:center; gap:12px; font-weight:700; letter-spacing:.2px}
+    .brand .logo{width:28px; height:28px; border-radius:8px; background:#0a6f53; position:relative; box-shadow: inset 0 0 0 2px rgba(255,255,255,.25)}
+    .brand .logo:before{content:""; position:absolute; inset:6px 8px 10px 8px; border:2px solid rgba(255,255,255,.6); border-top:none; border-radius:3px}
+    .brand .logo:after{content:""; position:absolute; right:5px; bottom:6px; width:10px; height:10px; border-radius:50%; background:#1f8f70}
+    nav{display:flex; gap:12px; flex-wrap:wrap}
+    .menu{display:flex; gap:8px}
+    .chip{background:rgba(255,255,255,.18); color:#fff; padding:8px 12px; border-radius:999px; font-weight:600; font-size:14px; border:1px solid rgba(255,255,255,.25)}
+    .auth{display:flex; gap:8px}
+    .btn{border:1px solid rgba(255,255,255,.6); color:#fff; background:transparent; padding:8px 12px; border-radius:10px; font-weight:600; cursor:pointer}
+    .btn.secondary{background:#fff; color:#0a6048; border-color:#fff}
+
+    /* toolbar */
+    .toolbar{margin:18px 20px 10px; display:grid; grid-template-columns: 1fr; gap:12px}
+    .row{display:flex; gap:12px; flex-wrap:wrap; align-items:center}
+    .pill{background:var(--green-300); color:#073b2c; padding:10px 14px; border-radius:999px; display:flex; align-items:center; gap:10px; box-shadow:var(--shadow)}
+    .select{display:flex; align-items:center; gap:8px}
+    select, input[type="number"], input[type="text"]{appearance:none; border:2px solid var(--green-200); background:#fff; padding:10px 12px; border-radius:14px; min-width:200px; font-size:14px; outline:none}
+    .search{flex:1; min-width:260px}
+    .search-wrap{position:relative; flex:1}
+    .search-wrap .icon{position:absolute; right:12px; top:50%; transform:translateY(-50%); color:var(--gray)}
+
+    /* content */
+    .container{margin:8px 20px 24px; display:grid; gap:16px}
+    .question{background:var(--card); border-radius:18px; padding:16px 18px; box-shadow:var(--shadow); text-align:center; font-weight:700}
+    .main{display:grid; grid-template-columns: 1fr 360px; gap:16px}
+    @media(max-width:1024px){.main{grid-template-columns:1fr}}
+
+    .panel{background:var(--card); border-radius:18px; padding:18px; box-shadow:var(--shadow)}
+    .panel h3{margin:0 0 10px; font-size:16px}
+    .fine{color:var(--gray); font-size:12px}
+    .suggest{display:grid; gap:8px}
+    .suggest .badge{display:inline-flex; align-items:center; gap:8px; background:#ecf5ff; color:#1158d3; border:1px solid #cfe3ff; padding:6px 10px; border-radius:999px; font-weight:700; font-size:12px}
+    .assump{display:grid; gap:6px; padding-left:18px}
+
+    /* code tabs */
+    .tabs{display:flex; gap:6px; margin:8px 0 12px}
+    .tab{padding:8px 12px; border:1px solid #e2e8f0; border-bottom:none; border-radius:12px 12px 0 0; background:#f8fafc; cursor:pointer; font-weight:700}
+    .tab.active{background:#fff}
+    pre{background:#0b1220; color:#d1e7ff; padding:14px; border-radius:0 12px 12px 12px; overflow:auto; line-height:1.5}
+
+    /* canvas */
+    .viz{background:#fff; border-radius:18px; padding:18px; box-shadow:var(--shadow); height:420px; display:flex; flex-direction:column}
+    .viz-head{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px}
+    .viz canvas{flex:1}
+
+    /* footer */
+    footer{color:#667085; font-size:12px; text-align:center; padding:18px 8px}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="head-wrap">
+      <div class="brand" title="DocuLab">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <div style="font-size:18px">DocuLab</div>
+          <div style="font-size:12px; opacity:.85">오피스×연구소 · 통계방법 제안 도우미</div>
+        </div>
+      </div>
+      <nav class="menu" aria-label="주요 메뉴">
+        <span class="chip">데이터 업로드(준비중)</span>
+        <span class="chip">통계방법 선택</span>
+        <span class="chip">시각화</span>
+        <span class="chip">코드 내보내기</span>
+      </nav>
+      <div class="auth">
+        <button class="btn" type="button">로그인</button>
+        <button class="btn secondary" type="button">회원가입</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Toolbar -->
+  <section class="toolbar" aria-label="분석 도구바">
+    <div class="row">
+      <div class="pill">
+        <strong>변수선택 (X)</strong>
+        <div class="select">
+          <select id="xType" title="X 변수 유형">
+            <option value="">유형 선택</option>
+            <option value="numeric">연속형(수치)</option>
+            <option value="binary">이분형</option>
+            <option value="categorical">범주형(3수준+)</option>
+          </select>
+          <select id="xGroups" title="X 그룹 수">
+            <option value="">그룹 수</option>
+            <option value="1">없음/단일</option>
+            <option value="2">2그룹</option>
+            <option value=">2">3그룹 이상</option>
+          </select>
+        </div>
+      </div>
+      <div class="pill">
+        <strong>변수선택 (Y)</strong>
+        <div class="select">
+          <select id="yType" title="Y 변수 유형">
+            <option value="">유형 선택</option>
+            <option value="numeric">연속형(수치)</option>
+            <option value="binary">이분형</option>
+            <option value="categorical">범주형(3수준+)</option>
+            <option value="count">카운트(계수)</option>
+          </select>
+          <select id="design" title="설계">
+            <option value="ind">독립</option>
+            <option value="paired">대응/반복측정</option>
+          </select>
+        </div>
+      </div>
+      <div class="pill">
+        <strong>가정/조건</strong>
+        <div class="select">
+          <select id="normal" title="정규성 가정">
+            <option value="unknown">정규성 모름</option>
+            <option value="normal">정규</option>
+            <option value="nonnormal">비정규</option>
+          </select>
+          <select id="equalVar" title="등분산 가정">
+            <option value="unknown">등분산 모름</option>
+            <option value="equal">등분산</option>
+            <option value="unequal">이분산</option>
+          </select>
+        </div>
+      </div>
+      <label class="pill" style="gap:12px">
+        <strong>샘플수</strong>
+        <input id="nInput" type="number" min="2" value="30" style="width:110px" />
+      </label>
+    </div>
+
+    <div class="row">
+      <div class="search-wrap">
+        <input id="searchBox" class="search" type="text" placeholder="통계방법 선택 및 서치 창 (예: 독립표본 t-검정, 카이제곱, ANOVA, 로지스틱 회귀)" />
+        <span class="icon">🔎</span>
+      </div>
+      <button class="btn" onclick="recommend()">방법 제안</button>
+    </div>
+  </section>
+
+  <section class="container">
+    <div class="question">추가 통계 툴 만들 때 들어가야 할 사항들 ? · 어떤 통계방법을 쓸지 DocuLab이 제안합니다</div>
+
+    <div class="main">
+      <!-- Left: Visualization -->
+      <div class="viz" role="region" aria-label="시각화">
+        <div class="viz-head">
+          <div>
+            <strong>시각화</strong>
+            <span class="fine">(데모 데이터, pyplot 유사 스타일)</span>
+          </div>
+          <div style="display:flex; gap:8px">
+            <button class="btn" onclick="renderBar()">막대</button>
+            <button class="btn" onclick="renderLine()">라인</button>
+            <button class="btn" onclick="resetChart()">지우기</button>
+          </div>
+        </div>
+        <canvas id="chart"></canvas>
+      </div>
+
+      <!-- Right: Suggestions & Code -->
+      <aside class="panel">
+        <h3>DocuLab 제안</h3>
+        <div id="suggestBox" class="suggest">
+          <span class="fine">상단에서 변수/가정/설계를 선택하고 <b>방법 제안</b>을 눌러보세요.</span>
+        </div>
+
+        <h3 style="margin-top:16px">가정(Assumptions) 체크리스트</h3>
+        <div id="assump" class="assump"></div>
+
+        <h3 style="margin-top:16px">코드 내보내기</h3>
+        <div class="tabs">
+          <div class="tab active" data-tab="r">R</div>
+          <div class="tab" data-tab="sas">SAS</div>
+          <div class="tab" data-tab="spss">SPSS</div>
+        </div>
+        <pre id="code"># 여기 코드가 생성됩니다. (위에서 방법 제안 실행)</pre>
+        <button class="btn" onclick="copyCode()">코드 복사</button>
+      </aside>
+    </div>
+  </section>
+
+  <footer>
+    © DocuLab • Officemate Labs — 오피스×연구소 하이브리드 통계도구 UI 데모
+  </footer>
+
+<script>
+  // ===== Chart helpers =====
+  let chart; const ctx = document.getElementById('chart');
+  function demoData(){
+    return Array.from({length:6},(_,i)=>({x:`G${i+1}`, y: Math.round(40+Math.random()*30)}));
+  }
+  function render(type){
+    const data = demoData();
+    const cfg = {type, data:{labels:data.map(d=>d.x), datasets:[{label:'Demo', data:data.map(d=>d.y)}]}, options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}}};
+    if(chart) chart.destroy(); chart = new Chart(ctx, cfg);
+  }
+  function renderBar(){render('bar');}
+  function renderLine(){render('line');}
+  function resetChart(){ if(chart){ chart.destroy(); chart=null; } }
+
+  // ===== Recommendation engine (간단 규칙 기반) =====
+  const suggestBox = document.getElementById('suggestBox');
+  const assumpBox = document.getElementById('assump');
+  const codeBox = document.getElementById('code');
+  const tabs = document.querySelectorAll('.tab');
+  let currentTab = 'r';
+  tabs.forEach(t=>t.addEventListener('click',()=>{
+    tabs.forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    currentTab = t.dataset.tab; updateCode();
+  }));
+
+  let lastMethod = null;
+  function recommend(){
+    const x = document.getElementById('xType').value;
+    const y = document.getElementById('yType').value;
+    const design = document.getElementById('design').value;
+    const normal = document.getElementById('normal').value;
+    const equalVar = document.getElementById('equalVar').value;
+    const n = Number(document.getElementById('nInput').value||0);
+
+    // Rule book
+    let method = null; let notes=[]; let posthoc='';
+    if(x==='numeric' && y==='categorical'){
+      const grpSel = document.getElementById('xGroups').value;
+      if(grpSel==='2' && design==='ind'){
+        method = (normal==='normal' && equalVar!=='unequal')? '독립표본 t-검정':'Mann–Whitney U';
+        notes.push('연속형 vs 2그룹(독립) 비교');
+      } else if(grpSel==='2' && design==='paired'){
+        method = (normal==='normal')? '대응표본 t-검정':'Wilcoxon 부호순위';
+        notes.push('대응/반복측정 2시점 비교');
+      } else if(grpSel==='>2'){
+        method = (normal==='normal')? '일원분산분석(ANOVA)':'Kruskal–Wallis';
+        posthoc = (normal==='normal')? 'Tukey(HSD), Holm, Bonferroni':'Dunn, BH(FDR)';
+        notes.push('연속형 vs 3군 이상');
+      }
+    } else if(x==='categorical' && y==='categorical'){
+      method = (n<40)? 'Fisher 정확 검정':'카이제곱 검정';
+      notes.push('범주×범주 교차표');
+    } else if(x==='numeric' && y==='numeric'){
+      method = (normal==='normal')? '피어슨 상관/단순회귀':'스피어만 상관';
+      notes.push('연속형×연속형 관계');
+    } else if(y==='binary'){
+      method = '로지스틱 회귀';
+      notes.push('종속변수 이분형');
+    } else if(y==='count'){
+      method = '포아송 회귀(필요시 음이항)';
+      notes.push('종속변수 계수형');
+    }
+
+    // F-test/Levene 제시
+    if(method && (equalVar==='unknown' || equalVar==='unequal')){
+      notes.push('등분산 검토: F-test, Levene');
+    }
+
+    // Render suggestion badges
+    suggestBox.innerHTML = '';
+    if(!method){ suggestBox.innerHTML = '<span class="fine">규칙에 맞는 방법을 찾지 못했습니다. 선택값을 바꿔보세요.</span>'; return; }
+    const badge = document.createElement('span'); badge.className='badge'; badge.textContent = method; suggestBox.appendChild(badge);
+    if(posthoc){ const ph = document.createElement('div'); ph.className='fine'; ph.textContent = `사후검정: ${posthoc}`; suggestBox.appendChild(ph); }
+    const ul = document.createElement('ul'); ul.className='assump';
+    ul.innerHTML = `
+      <li>정규성: ${normal==='unknown'?'Shapiro–Wilk 권장':(normal==='normal'?'충족':'비정규 · 비모수 권장')}</li>
+      <li>등분산: ${equalVar==='unknown'?'Levene/F-test 권장':(equalVar==='equal'?'충족':'이분산 모형 또는 Welch')}</li>
+      <li>표본수(n): ${n} — 검정력 사전 점검 권장</li>`;
+    assumpBox.replaceChildren(ul);
+
+    lastMethod = method; updateCode();
+  }
+
+  // ===== Code templates =====
+  function updateCode(){
+    if(!lastMethod){ codeBox.textContent = '# 방법 제안 후 코드가 표시됩니다.'; return; }
+    const tpl = templates[lastMethod] || templates['기본'];
+    codeBox.textContent = tpl[currentTab] || '# 해당 언어 템플릿이 준비되지 않았습니다.';
+  }
+
+  const templates = {
+    '독립표본 t-검정':{
+      r:`# R — 독립표본 t-test (등분산 가정 시)
+library(dplyr)
+# 데이터: df, 그룹변수 group(2수준), 연속형 변수 y
+with(df, t.test(y ~ group, var.equal = TRUE))
+`,
+      sas:`/* SAS — 독립표본 t-test */
+proc ttest data=df;
+  class group; var y;
+run;`,
+      spss:`* SPSS — 독립표본 t-test.
+T-TEST GROUPS=group(0 1)
+  /VARIABLES=y
+  /MISSING=ANALYSIS.`
+    },
+    'Mann–Whitney U':{
+      r:`# R — Mann–Whitney U (Wilcoxon rank-sum)
+wilcox.test(y ~ group, data=df, exact=FALSE)
+`,
+      sas:`/* SAS — Wilcoxon rank-sum */
+proc npar1way wilcoxon data=df; class group; var y; run;`,
+      spss:`NPAR TESTS
+  /MANN-WHITNEY = y BY group(0 1).`
+    },
+    '대응표본 t-검정':{
+      r:`# R — Paired t-test
+with(df, t.test(y1, y2, paired=TRUE))
+`, sas:`/* SAS — Paired t-test */
+proc ttest data=df; paired y1*y2; run;`, spss:`T-TEST PAIRS=y1 WITH y2 (PAIRED).`},
+    'Wilcoxon 부호순위':{
+      r:`# R — Wilcoxon signed-rank (paired)
+with(df, wilcox.test(y1, y2, paired=TRUE, exact=FALSE))
+`, sas:`/* SAS — Signed-rank */
+proc univariate data=df; var diff; ods select WilcoxonSignRank; run;`, spss:`NPAR TESTS /WILCOXON = y1 WITH y2 (PAIRED).`},
+    '일원분산분석(ANOVA)':{
+      r:`# R — One-way ANOVA
+fit <- aov(y ~ group, data=df)
+summary(fit)
+TukeyHSD(fit)  # 사후검정
+`, sas:`/* SAS — One-way ANOVA */
+proc anova data=df; class group; model y = group; means group / tukey; run;`, spss:`ONEWAY y BY group
+  /POSTHOC = TUKEY.`},
+    'Kruskal–Wallis':{
+      r:`# R — Kruskal–Wallis
+kruskal.test(y ~ group, data=df)
+`, sas:`/* SAS — Kruskal–Wallis */
+proc npar1way data=df wilcoxon; class group; var y; run;`, spss:`NPAR TESTS
+  /K-W = y BY group (1 3).`},
+    '카이제곱 검정':{
+      r:`# R — Chi-squared test (교차표)
+chisq.test(table(df$x, df$y))
+`, sas:`/* SAS — Chi-square */
+proc freq data=df; tables x*y / chisq; run;`, spss:`CROSSTABS
+  /TABLES = x BY y
+  /STATISTICS = CHISQ.`},
+    'Fisher 정확 검정':{
+      r:`# R — Fisher exact
+fisher.test(table(df$x, df$y))
+`, sas:`/* SAS — Fisher exact */
+proc freq data=df; tables x*y / fisher; run;`, spss:`CROSSTABS
+  /TABLES = x BY y
+  /STATISTICS = FISHER.`},
+    '피어슨 상관/단순회귀':{
+      r:`# R — Pearson corr & simple lm
+cor.test(df$x, df$y, method='pearson')
+sum_lm <- summary(lm(y ~ x, data=df)); sum_lm
+`, sas:`/* SAS — Pearson corr & simple reg */
+proc corr data=df; var x y; run;
+proc reg data=df; model y = x; run;`, spss:`CORRELATIONS /VARIABLES=x y /PRINT=TWOTAIL.
+REGRESSION /DEPENDENT y /METHOD=ENTER x.`},
+    '스피어만 상관':{
+      r:`# R — Spearman
+cor.test(df$x, df$y, method='spearman')
+`, sas:`proc corr data=df spearman; var x y; run;`, spss:`NONPAR CORR /VARIABLES=x y /PRINT=SPEARMAN.`},
+    '로지스틱 회귀':{
+      r:`# R — Logistic regression (binary y)
+fit <- glm(y ~ x1 + x2, data=df, family=binomial())
+summary(fit)
+`, sas:`/* SAS — Logistic */
+proc logistic data=df; model y(event='1') = x1 x2; run;`, spss:`LOGISTIC REGRESSION VARIABLES y
+  /METHOD = ENTER x1 x2
+  /CRITERIA = PIN(.05) POUT(.10).`},
+    '포아송 회귀(필요시 음이항)':{
+      r:`# R — Poisson (check overdispersion; else use negative binomial)
+fit <- glm(count ~ x1 + offset(log(exposure)), family=poisson(), data=df)
+summary(fit)
+# if overdispersed:
+# library(MASS); glm.nb(count ~ x1 + offset(log(exposure)), data=df)
+`, sas:`/* SAS — Poisson with offset */
+proc genmod data=df; model count = x1 / dist=poisson link=log offset=log_exposure; run;`, spss:`GENLIN count WITH x1
+  /MODEL x1 DIST=POISSON LINK=LOG OFFSET=log_exposure.`},
+    '기본':{r:'# 준비중', sas:'/* 준비중 */', spss:'* 준비중.'}
+  };
+
+  function copyCode(){
+    navigator.clipboard.writeText(codeBox.textContent).then(()=>{
+      alert('코드를 복사했습니다.');
+    });
+  }
+</script>
+</body>
+</html>
