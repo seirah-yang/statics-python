@@ -32,7 +32,7 @@ from sentence_transformers import SentenceTransformer, util
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, TextClassificationPipeline
 
 # -------------------------------
-# 1️⃣ Google Drive mount
+#  Google Drive mount
 # -------------------------------
 try:
     from google.colab import drive, files
@@ -45,7 +45,7 @@ SAVE_DIR = "/content/drive/MyDrive/unieval_results" if IN_COLAB else "./unieval_
 os.makedirs(SAVE_DIR, exist_ok=True)
 
 # -------------------------------
-# 2️⃣ Core model setup
+#  Core model setup
 # -------------------------------
 EMBEDDING_MODEL = "intfloat/e5-large"
 NLI_MODEL = "joeddav/xlm-roberta-large-xnli"
@@ -83,7 +83,7 @@ def get_nli():
     return _nli
 
 # -------------------------------
-# 3️⃣ Text loading utilities
+#  Text loading utilities
 # -------------------------------
 def load_text(path):
     suf = Path(path).suffix.lower()
@@ -108,7 +108,7 @@ def sent_split(text):
     return [s.strip() for s in chunks if len(s.strip()) > 2]
 
 # -------------------------------
-# 4️⃣ Metric functions
+#  Metric functions
 # -------------------------------
 def cosine_redundancy(sents, emb):
     """1(좋음) ~ 0(나쁨): 문장 간 과도한 중복이 많을수록 점수↓"""
@@ -206,7 +206,7 @@ def accuracy_score(claims, evid):
     return float(np.mean(np.max(sims, axis=1))) if sims.size > 0 else 0.0
 
 # -------------------------------
-# 5️⃣ Evaluation functions
+# Evaluation functions
 # -------------------------------
 def evaluate_section(title, text):
     emb = get_embedder()
@@ -243,9 +243,9 @@ def evaluate_folder(target_folder):
             result = evaluate_section(title, text)
             result["file"] = f.name
             all_results.append(result)
-            print(f"✅ {f.name} → 평가완료 (final={result['final']:.3f})")
+            print(f" {f.name} → 평가완료 (final={result['final']:.3f})")
         except Exception as e:
-            print(f"❌ {f.name} → 평가 실패: {e}")
+            print(f" {f.name} → 평가 실패: {e}")
 
     if not all_results:
         print("[WARN] No results produced.")
@@ -254,13 +254,13 @@ def evaluate_folder(target_folder):
     df = pd.DataFrame(all_results)
     csv_path = os.path.join(SAVE_DIR, "results_summary.csv")
     df.to_csv(csv_path, index=False)
-    print(f"\n📊 CSV 저장 완료: {csv_path}")
+    print(f"\n CSV 저장 완료: {csv_path}")
 
     generate_report_html(df, SAVE_DIR)
     return df
 
 # -------------------------------
-# 6️⃣ Visualization Report
+#  Visualization Report
 # -------------------------------
 def generate_report_html(df, save_dir):
     if df is None or df.empty:
@@ -302,17 +302,15 @@ def generate_report_html(df, save_dir):
         f.write(radar.to_html(full_html=False, include_plotlyjs='cdn'))
         f.write(bar.to_html(full_html=False, include_plotlyjs=False))
         f.write(df.to_html(index=False))
-    print(f"📈 시각화 리포트 저장 완료: {html_path}")
+    print(f" 시각화 리포트 저장 완료: {html_path}")
 
 # -------------------------------
-# 7️⃣ Example Run
+# Example Run
 # -------------------------------
 target_folder = "/content/drive/MyDrive/1027" if IN_COLAB else "./samples"
 df = evaluate_folder(target_folder)   # → results_summary.csv + evaluation_report.html 생성
 
-# ===========================================================
-# 8️⃣ HTML → Markdown 변환
-# ===========================================================
+# HTML → Markdown 변환
 html_path = os.path.join(SAVE_DIR, "evaluation_report.html")
 outpath = "/content/evaluation_report.md" if IN_COLAB else "./evaluation_report.md"
 
@@ -330,10 +328,10 @@ if os.path.exists(html_path):
     with open(outpath, "w", encoding="utf-8") as f:
         f.write(md_content)
 
-    print("\n✅ 보고서 생성 완료:", outpath)
+    print("보고서 생성 완료:", outpath)
     if IN_COLAB:
         from google.colab import files
         time.sleep(1)
         files.download(outpath)
 else:
-    print("⚠️ 결과 파일이 생성되지 않았습니다. 오류 로그를 확인해주세요.")
+    print(" 결과 파일이 생성되지 않았습니다. 오류 로그를 확인해주세요.")
