@@ -1,5 +1,5 @@
 # ================================================================
-# RND_Plan_Pipeline_v2_Stable_fixTokenizer.py
+# RND_Plan_Pipeline.py
 # SKT A.X 4.0 + E5-Large + XLM-RoBERTa NLI 기반 문서 생성 파이프라인
 # ================================================================
 
